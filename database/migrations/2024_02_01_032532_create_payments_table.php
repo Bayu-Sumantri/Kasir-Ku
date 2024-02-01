@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('id_user')->references('id')->on('users');
             $table->string('nama_produk');
             $table->string('harga_total');
+            $table->string('harga_discount')->nullable();
+            $table->string('persen_discount')->nullable();
             $table->string('jumlah_semua_pembelian');
             $table->string('methode_pembayaran');
             $table->string('dana')->nullable();

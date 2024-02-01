@@ -15,7 +15,8 @@
                     alt="User Image">
             </div>
             <div class="info">
-                <a href="{{ url('#') }}" class="d-block">Alexander Pierce</a>
+                <a href="{{ url('/') }}" class="d-block">{{ auth()->check() ? auth()->user()->name : 'Tidak ada' }}
+                </a>
             </div>
         </div>
 

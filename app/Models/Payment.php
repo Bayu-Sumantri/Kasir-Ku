@@ -16,6 +16,8 @@ class Payment extends Model
         "id_user",
         "nama_produk",
         "harga_total",
+        "harga_discount",
+        "persen_discount",
         "jumlah_semua_pembelian",
         "methode_pembayaran",
         "dana",

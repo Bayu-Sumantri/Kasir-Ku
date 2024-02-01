@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PrintController;
 use App\Models\Kategori;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +27,12 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $total_kategori = Kategori::count();
+    $total_kategori    = Kategori::count();
+    $total_user        = User::count();
+    $total_product     = Product::count();
+    $total_payment     = Payment::count();
 
-    return view('admin.index', compact('total_kategori'));
+    return view('admin.index', compact('total_kategori', 'total_user', 'total_product',  'total_payment'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -41,6 +46,7 @@ Route::middleware('auth')->group(function () {
 Route::resource('Kategori','App\Http\Controllers\KategoriController')->middleware(['auth']);
 Route::resource('Product','App\Http\Controllers\ProductController')->middleware(['auth']);
 Route::resource('Payment','App\Http\Controllers\PaymentController')->middleware(['auth']);
+Route::resource('Print','App\Http\Controllers\PrintController')->middleware(['auth']);
 
 Route::get('/Product_master', function () {
     $allkategori = Kategori::all();
@@ -50,6 +56,11 @@ Route::get('/Product_master', function () {
     // return $episode;
     return view('product.index', compact('allkategori', 'allproduk', 'allpayment'));
 })->name('Product_master');
+
+
+
+Route::get('cetakPDF/{id}', [PrintController::class, "cetakPDF"])->name('cetakPDF');
+
 
 
 

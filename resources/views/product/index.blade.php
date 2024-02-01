@@ -1,6 +1,6 @@
 @extends('admin.admin_master')
 @section('tittle')
-    Product
+    Product Transaction
 @endsection
 
 @section('admin.index')
@@ -56,8 +56,7 @@
                                                     action="{{ route('Product.destroy', [$row->id]) }}">
                                                     @csrf
                                                     {{ method_field('DELETE') }}
-                                                    <a href="{{ route('Product.edit', $row->id) }}" class="btn btn-info"><i
-                                                            class="far fa-edit"></i></a>
+                                                    <a href="{{ route('cetakPDF', $row->id) }}" target="_blank" class="btn btn-info"><i class="fas fa-print"></i></a>
                                                     <button type="submit" class="btn btn-danger"><i
                                                             class="fa fa-trash"></i></button>
                                             </td>

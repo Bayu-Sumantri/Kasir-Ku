@@ -80,17 +80,18 @@
 
 
             <div class="col-md-4 order-list-container">
-                <div style="display: flex; justify-content: center">
+                <div class="text-center">
                     <h5>Order List</h5>
                 </div>
-                <div>
+                <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Nama Barang</th>
+                                <th>Barang</th>
                                 <th>Jumlah</th>
                                 <th id="harga">Harga</th>
                                 <th>Total</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="cart-items">
@@ -113,14 +114,13 @@
                     </table>
                 </div>
 
-                <div class="d-flex justify-content-center mt-3">
+                <div class="text-center mt-3">
                     <button type="button" class="btn btn-primary btn-muncul" id="btn-muncul">
                         Payment Method
                     </button>
                 </div>
-
-
             </div>
+
         </div>
     </div>
     <br>
@@ -149,6 +149,18 @@
                 <label for="rekening" id="rekeningLabel">Harga Total:</label>
                 <input type="text" class="form-control" id="totalPrice" name="harga_total" placeholder="Total Price"
                     readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="rekening" id="rekeningLabel">Harga Discount:</label>
+                <input type="text" class="form-control" id="discount_harga_total" name="harga_discount"
+                    placeholder="Total Quantity" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="rekening" id="rekeningLabel">Persen Discount:</label>
+                <input type="text" class="form-control" id="discount_harga" name="persen_discount"
+                    placeholder="Total Quantity" readonly>
             </div>
 
             <div class="mb-3">
@@ -206,148 +218,179 @@
         integrity="sha512-Rdk63VC+1UYzGSgd3u2iadi0joUrcwX0IWp2rTh6KXFoAmgOjRS99Vynz1lJPT8dLjvo6JZOqpAHJyfCEZ5KoA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script>
-        $(function() {
-            // Specify the IDs of the input fields
-            const inputIds = ['#harga', '#jumlah', /* add more IDs here */ ];
+        <script>
+            $(function() {
+                // Specify the IDs of the input fields
+                const inputIds = ['#harga', '#discount_harga', /* add more IDs here */ ];
 
-            // Loop through each ID and apply maskMoney plugin
-            for (let i = 0; i < inputIds.length; i++) {
-                $(inputIds[i]).maskMoney({
-                    thousands: '.',
-                    decimal: ',',
-                    precision: 0,
-                    allowZero: false,
-                    allowNegative: false,
-                });
-            }
-        });
-
-        $(document).ready(function() {
-            const cartItems = [];
-            const totalAllElement = $('#total-all');
-            const cartItemsElement = $('#cart-items');
-            const totalQuantityElement = $('#totalQuantity');
-            const allBarangElement = $('#all_barang');
-            const allJumlahElement = $('#all_jumlah');
-
-            // Add event delegation to handle input changes
-            cartItemsElement.on('change', '.quantity-input', function() {
-                const productId = $(this).data('id');
-                const quantity = parseInt($(this).val());
-
-                const existingItem = cartItems.find(item => item.id === productId);
-
-                if (existingItem) {
-                    existingItem.quantity = quantity;
-                }
-
-                updateCartUI();
-            });
-
-            $('.addToCartBtn').on('click', function() {
-                const productId = $(this).data('id');
-                const productName = $(this).data('name');
-                const productPrice = $(this).data('price');
-
-                const existingItem = cartItems.find(item => item.id === productId);
-
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cartItems.push({
-                        id: productId,
-                        name: productName,
-                        price: productPrice,
-                        quantity: 1,
+                // Loop through each ID and apply maskMoney plugin
+                for (let i = 0; i < inputIds.length; i++) {
+                    $(inputIds[i]).maskMoney({
+                        thousands: '.',
+                        decimal: ',',
+                        precision: 0,
+                        allowZero: false,
+                        allowNegative: false,
                     });
                 }
-
-                updateCartUI();
             });
 
-            function updateCartUI() {
-                // Clear existing items
-                cartItemsElement.empty();
+            $(document).ready(function() {
+                const cartItems = [];
+                const totalAllElement = $('#total-all');
+                const cartItemsElement = $('#cart-items');
+                const totalQuantityElement = $('#totalQuantity');
+                const allBarangElement = $('#all_barang');
+                const allJumlahElement = $('#all_jumlah');
 
-                let totalPrice = 0;
-                let totalQuantity = 0;
-                let productNames = [];
+                // Add event delegation to handle input changes
+                cartItemsElement.on('change', '.quantity-input', function() {
+                    const productId = $(this).data('id');
+                    const quantity = parseInt($(this).val());
 
-                // Populate cart items
-                $.each(cartItems, function(index, item) {
-                    const total = item.price * item.quantity;
-                    totalPrice += total;
-                    totalQuantity += item.quantity;
-                    productNames.push(item.name);
+                    const existingItem = cartItems.find(item => item.id === productId);
 
-                    cartItemsElement.append(`
-                 <tr>
-                     <td>${item.name}</td>
-                     <td>
-                         <input type="number" class="form-control quantity-input"
-                             data-id="${item.id}" value="${item.quantity}" min="1">
-                     </td>
-                     <td>Rp. ${item.price}</td>
-                     <td>Rp. ${total}</td>
-                 </tr>
-             `);
+                    if (existingItem) {
+                        existingItem.quantity = quantity;
+                    }
+
+                    updateCartUI();
                 });
 
-                // Set values for the input fields in the modal
-                totalQuantityElement.val(totalQuantity);
-                $('#totalPrice').val(`Rp. ${totalPrice}`);
-                allBarangElement.text(productNames.join(', '));
-                // Set the value of the input field with ID 'all_barang'
-                $('#all_produk').val(productNames.join(', '));
-                allJumlahElement.text(cartItems.length);
+                // Add event delegation to handle delete button clicks
+                cartItemsElement.on('click', '.deleteCartItem', function() {
+                    const productId = $(this).data('id');
+                    const itemIndex = cartItems.findIndex(item => item.id === productId);
 
-                // Calculate cumulative discount
-                const cumulativeDiscount = Math.floor(totalPrice / 100000) *
-                    0.05; // 5% discount for every Rp100,000 spent
+                    if (itemIndex !== -1) {
+                        cartItems.splice(itemIndex, 1);
+                        updateCartUI();
+                    }
+                });
 
-                // Calculate discounted total
-                const discountedTotal = totalPrice - (totalPrice * cumulativeDiscount);
+                $('.addToCartBtn').on('click', function() {
+                    const productId = $(this).data('id');
+                    const productName = $(this).data('name');
+                    const productPrice = $(this).data('price');
 
-                // Update total and display discount information in the UI
-                totalAllElement.html(`
-             <del>Rp. ${totalPrice.toFixed(2)}</del><br>
-             <strong>Rp. ${discountedTotal.toFixed(2)} (-${(cumulativeDiscount * 100).toFixed(0)}%)</strong>
-         `);
-            }
-        });
+                    const existingItem = cartItems.find(item => item.id === productId);
 
-        $(document).ready(function() {
-            let previouslySelectedForm = null;
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                    } else {
+                        cartItems.push({
+                            id: productId,
+                            name: productName,
+                            price: productPrice,
+                            quantity: 1,
+                        });
+                    }
 
-            $("#metode_pembayaran").change(function() {
-                if (previouslySelectedForm !== null) {
-                    previouslySelectedForm.hide("slow");
-                }
+                    updateCartUI();
+                });
 
-                let selectedValue = $(this).val();
+                function updateCartUI() {
+                    // Clear existing items
+                    cartItemsElement.empty();
 
-                if (selectedValue === "dana") {
-                    $("#dana_form_muncul").show("slow");
-                    previouslySelectedForm = $("#dana_form_muncul");
-                } else if (selectedValue === "bank") {
-                    $("#bank_form_muncul").show("slow");
-                    previouslySelectedForm = $("#bank_form_muncul");
-                } else if (selectedValue === "COD") {
-                    $("#alamat_COD_muncul").show("slow");
-                    previouslySelectedForm = $("#alamat_COD_muncul");
+                    let totalPrice = 0;
+                    let totalQuantity = 0;
+                    let productNames = [];
+
+                    // Populate cart items
+                    $.each(cartItems, function(index, item) {
+                        const total = item.price * item.quantity;
+                        totalPrice += total;
+                        totalQuantity += item.quantity;
+                        productNames.push(item.name);
+
+                        cartItemsElement.append(`
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>
+                                    <input type="number" class="form-control quantity-input"
+                                        data-id="${item.id}" value="${item.quantity}" min="1">
+                                </td>
+                                <td>Rp. ${item.price}</td>
+                                <td>Rp. ${total}</td>
+                                <td>
+                                    <button class="btn btn-danger deleteCartItem" data-id="${item.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+
+                    // Set values for the input fields in the modal
+                    totalQuantityElement.val(totalQuantity);
+                    $('#totalPrice').val(`Rp. ${totalPrice}`);
+                    allBarangElement.text(productNames.join(', '));
+                    // Set the value of the input field with ID 'all_barang'
+                    $('#all_produk').val(productNames.join(', '));
+                    allJumlahElement.text(cartItems.length);
+
+                    // Calculate cumulative discount
+                    const cumulativeDiscount = Math.floor(totalPrice / 100000) *
+                        0.05; // 5% discount for every Rp100,000 spent
+
+                    // Calculate discounted total
+                    const discountedTotal = totalPrice - (totalPrice * cumulativeDiscount);
+
+                    // Update total and display discount information in the UI
+                    totalAllElement.html(`
+                        <del>Rp. ${totalPrice.toFixed(2)}</del><br>
+                        <strong>Rp. ${discountedTotal.toFixed(2)} (-${(cumulativeDiscount * 100).toFixed(0)}%)</strong>
+                    `);
+                    // Set the discounted total value to the input field with id 'discount_harga'
+                    if (cumulativeDiscount > 0) {
+                        // If there is a discount, show the discount-related elements
+                        $('#discount_harga_total').val(`Rp. ${discountedTotal.toFixed(2)}`);
+                        $('#discount_harga').val(`${(cumulativeDiscount * 100).toFixed(0)}%`);
+
+                        // Show the elements
+                        $('#discount_harga_total').closest('.mb-3').show();
+                        $('#discount_harga').closest('.mb-3').show();
+                    } else {
+                        // If there is no discount, hide the discount-related elements
+                        $('#discount_harga_total').closest('.mb-3').hide();
+                        $('#discount_harga').closest('.mb-3').hide();
+                    }
                 }
             });
-        });
 
-        // hideform
-        $(document).ready(function() {
-            // Tambahkan event klik pada tombol "Payment Method" dengan id "btn-muncul"
-            $('#btn-muncul').click(function() {
-                // Tampilkan formulir pembayaran dengan id "form-hide"
-                $('#form-hide').removeClass('d-none');
+            $(document).ready(function() {
+                let previouslySelectedForm = null;
+
+                $("#metode_pembayaran").change(function() {
+                    if (previouslySelectedForm !== null) {
+                        previouslySelectedForm.hide("slow");
+                    }
+
+                    let selectedValue = $(this).val();
+
+                    if (selectedValue === "dana") {
+                        $("#dana_form_muncul").show("slow");
+                        previouslySelectedForm = $("#dana_form_muncul");
+                    } else if (selectedValue === "bank") {
+                        $("#bank_form_muncul").show("slow");
+                        previouslySelectedForm = $("#bank_form_muncul");
+                    } else if (selectedValue === "COD") {
+                        $("#alamat_COD_muncul").show("slow");
+                        previouslySelectedForm = $("#alamat_COD_muncul");
+                    }
+                });
             });
-        });
-    </script>
+
+            // hideform
+            $(document).ready(function() {
+                // Tambahkan event klik pada tombol "Payment Method" dengan id "btn-muncul"
+                $('#btn-muncul').click(function() {
+                    // Tampilkan formulir pembayaran dengan id "form-hide"
+                    $('#form-hide').removeClass('d-none');
+                });
+            });
+        </script>
+
 
 @endsection

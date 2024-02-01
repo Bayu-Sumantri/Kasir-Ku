@@ -17,7 +17,8 @@ class PaymentController extends Controller
         $payment = Payment::orderBy('nama_produk', 'asc')->simplePaginate(10);
         // $total_travel = Travel_packages::count();
         $allproduk = Product::simplePaginate(10);
-        return view('product.index', compact('payment', 'allproduk'));
+        $allpayment = Payment::simplePaginate(10);
+        return view('product.index', compact('payment', 'allproduk', 'allpayment'));
     }
 
     /**
@@ -54,6 +55,8 @@ class PaymentController extends Controller
                 'jumlah_semua_pembelian'  => $request->jumlah_semua_pembelian,
                 'nama_produk'             => $request->nama_produk,
                 'harga_total'             => $request->harga_total,
+                'harga_discount'          => $request->harga_discount,
+                'persen_discount'         => $request->persen_discount,
                 'methode_pembayaran'      => $request->methode_pembayaran,
                 'dana'                    => $request->dana,
                 'bank'                    => $request->bank,
