@@ -22,30 +22,33 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Product</th>
-                                        <th>Nama Merk</th>
-                                        <th>Gambar Product</th>
-                                        <th>Harga Beli</th>
-                                        <th>Kategori</th>
+                                        <th>Harga Total</th>
+                                        <th>Jumlah Pembelian</th>
+                                        <th>Payment Method</th>
+                                        <th>No Payment</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($Product as $row)
+                                    @foreach ($allpayment as $row)
                                         <tr>
-                                            <td> {{ $loop->iteration + $Product->perpage() * ($Product->currentPage() - 1) }}
+                                            <td> {{ $loop->iteration + $allpayment->perpage() * ($allpayment->currentPage() - 1) }}
                                             </td>
                                             <td>{{ $row->nama_produk }}
                                             </td>
-                                            <td>{{ $row->merk }}
+                                            <td>{{ $row->harga_total }}
                                             </td>
+                                            <td>{{ $row->jumlah_semua_pembelian }}
+                                            </td>
+                                            <td>{{ $row->methode_pembayaran }}</td>
                                             <td>
-                                                <img class="img-fluid img-box img-center"
-                                                    src="{{ asset('storage/'.$row->gambar_produk) }}"
-                                                    alt="{{ $row->gambar_produk }}">
-                                            </td>
-                                            <td>{{ $row->harga_beli }}
-                                            </td>
-                                            <td>{{ $row->kategori->nama_kategori }}
+                                                @if ($row->methode_pembayaran === 'dana')
+                                                    {{ $row->dana }}
+                                                @elseif ($row->methode_pembayaran === 'bank')
+                                                    {{ $row->bank }}
+                                                @elseif ($row->methode_pembayaran === 'COD')
+                                                    {{ $row->COD }}
+                                                @endif
                                             </td>
                                             <td>
                                                 <form method="post"

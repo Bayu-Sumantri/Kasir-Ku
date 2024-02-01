@@ -4,7 +4,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PaymentController;
 use App\Models\Kategori;
+use App\Models\Payment;
+use App\Models\Product;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +40,16 @@ Route::middleware('auth')->group(function () {
 // resouce
 Route::resource('Kategori','App\Http\Controllers\KategoriController')->middleware(['auth']);
 Route::resource('Product','App\Http\Controllers\ProductController')->middleware(['auth']);
+Route::resource('Payment','App\Http\Controllers\PaymentController')->middleware(['auth']);
+
+Route::get('/Product_master', function () {
+    $allkategori = Kategori::all();
+    $allproduk   = Product::simplePaginate(10);
+    $allpayment  = Payment::simplePaginate(10);
+
+    // return $episode;
+    return view('product.index', compact('allkategori', 'allproduk', 'allpayment'));
+})->name('Product_master');
 
 
 

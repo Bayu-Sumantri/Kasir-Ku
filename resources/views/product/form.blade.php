@@ -57,21 +57,6 @@
         integrity="sha512-Rdk63VC+1UYzGSgd3u2iadi0joUrcwX0IWp2rTh6KXFoAmgOjRS99Vynz1lJPT8dLjvo6JZOqpAHJyfCEZ5KoA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        $(function() {
-            // Specify the IDs of the input fields
-            const inputIds = ['#harga', '#jumlah', /* add more IDs here */ ];
-
-            // Loop through each ID and apply maskMoney plugin
-            for (let i = 0; i < inputIds.length; i++) {
-                $(inputIds[i]).maskMoney({
-                    thousands: '.',
-                    decimal: ',',
-                    precision: 0,
-                    allowZero: false,
-                    allowNegative: false,
-                });
-            }
-        });
 
 
 

@@ -32,10 +32,12 @@
     <link rel="stylesheet" href="{{ asset("/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css") }}">
     <link rel="stylesheet" href="{{ asset("/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css") }}">
     <link rel="stylesheet" href="{{ asset("/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css") }}">
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
     @include('sweetalert::alert')
+
     <div class="wrapper">
 
         <!-- Preloader -->
@@ -48,6 +50,8 @@
 
         <!-- Main Sidebar Container -->
 @include('admin.sidebar')
+
+
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -68,9 +72,12 @@
                 </div><!-- /.container-fluid -->
             </div>
             <!-- /.content-header -->
+@include('error.error')
+
 
             <!-- Main content -->
 @yield('admin.index')
+
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
