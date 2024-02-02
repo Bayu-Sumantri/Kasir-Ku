@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PaymentController extends Controller
@@ -32,43 +33,44 @@ class PaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-        public function store(Request $request)
-        {
-            // return $request;
-            $data = $request->validate([
-                'id_user'                 => ['required'],
-                'nama_produk'             => ['required', 'string', 'max:255'],
-                'harga_total'             => ['required', 'string', 'max:255'],
-                'jumlah_semua_pembelian'  => ['required', 'string', 'max:255'],
-                'methode_pembayaran'      => ['required', 'string', 'max:255'],
-            ]);
+    public function store(Request $request)
+    {
+        // Validasi input
+        $data = $request->validate([
+            'id_user'                 => ['required'],
+            'nama_produk'             => ['required', 'string', 'max:255'],
+            'harga_total'             => ['required', 'string', 'max:255'],
+            'jumlah_semua_pembelian'  => ['required', 'string', 'max:255'],
+            'methode_pembayaran'      => ['required', 'string', 'max:255'],
+        ]);
 
-            // Store the uploaded image in the 'gambar_product' folder
-            // $namaFile = $request->file('gambar_produk')->getClientOriginalName();
-            // $request->file('gambar_produk')->move(public_path('gambar_produk'), $namaFile);
+        // Simpan data ke database
+        $payment = Payment::create([
+            'id_user'                 => $request->id_user,
+            'jumlah_semua_pembelian'  => $request->jumlah_semua_pembelian,
+            'nama_produk'             => $request->nama_produk,
+            'harga_total'             => $request->harga_total,
+            'harga_discount'          => $request->harga_discount,
+            'persen_discount'         => $request->persen_discount,
+            'methode_pembayaran'      => $request->methode_pembayaran,
+            'dana'                    => $request->dana,
+            'bank'                    => $request->bank,
+            'COD'                     => $request->COD,
+        ]);
 
-            // $images = $request->file('gambar_produk')->store('gambar_produk');
-
-
-            Payment::create([
-                'id_user'                 => $request->id_user,
-                'jumlah_semua_pembelian'  => $request->jumlah_semua_pembelian,
-                'nama_produk'             => $request->nama_produk,
-                'harga_total'             => $request->harga_total,
-                'harga_discount'          => $request->harga_discount,
-                'persen_discount'         => $request->persen_discount,
-                'methode_pembayaran'      => $request->methode_pembayaran,
-                'dana'                    => $request->dana,
-                'bank'                    => $request->bank,
-                'COD'                     => $request->COD,
-            ]);
-
-            // Flash message using Laravel Alert package (you need to install it)
+        // Cek apakah data berhasil disimpan
+        if ($payment) {
+            // Flash message using Laravel Alert package
             Alert::success('Berhasil', 'Success Make a Transaction');
 
-            // Redirect to the correct route (Product.index)
-            return redirect(route('Payment.index'))->with('success', 'Successfully uploaded your Product');
+            // Cetak PDF dan tampilkan view jika berhasil
+            $pdf = Pdf::loadview('print_resi.print_transaksi', compact('payment'));
+            return $pdf->stream();
+        } else {
+            // Jika gagal menyimpan data
+            return redirect(route('Payment.index'))->with('error', 'Failed to make a transaction');
         }
+    }
 
     /**
      * Display the specified resource.
